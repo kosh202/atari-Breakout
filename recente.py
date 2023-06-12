@@ -35,9 +35,9 @@ model = create_model()
 # Função para pré-processar a imagem de entrada
 def preprocess_state(state):
     state = state[0][35:195, :]  # Cortar a região de interesse da imagem
-    state = state[::2, :]  # Reduzir a resolução pela metade
-    state = np.mean(state, axis=2).astype(np.uint8)  # Converter para escala de cinza
-    state = state.reshape(1, 80, 80, 1)  # Redimensionar a imagem para (1, 80, 80, 1)
+    state = state[::2, ::2, 0]  # Reduzir a resolução e selecionar o primeiro canal (R)
+    state = np.expand_dims(state, axis=-1)  # Adicionar uma dimensão de canal
+    state = state.reshape(1, 80, 80, 1)  # Redimensionar o estado para (1, 80, 80, 1)
     return state
 
 # Função para tomar uma ação com base na política epsilon-greedy
@@ -55,7 +55,8 @@ for episode in range(500):
     while not done:
         env.render()
         action = choose_action(state, epsilon)
-        next_state, reward, done, _ = env.step(action)[0], env.step(action)[1], env.step(action)[2], {}
+        result = env.step(action)
+        next_state, reward, done, _ = result[0], result[1], result[2], result[3]
         next_state = preprocess_state(next_state)
         total_reward += reward
 
