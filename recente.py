@@ -4,7 +4,7 @@ from tensorflow import keras
 from tensorflow.keras import layers
 
 # Criação do ambiente
-env = gym.make('ALE/Breakout-v5')
+env = gym.make("ALE/Breakout-v5", render_mode="human")
 
 # Parâmetros do agente DQN
 gamma = 0.99  # Fator de desconto
@@ -26,7 +26,7 @@ def create_model():
         layers.Dense(512, activation='relu'),
         layers.Dense(env.action_space.n)
     ])
-    model.compile(optimizer=keras.optimizers.Adam(lr=learning_rate), loss='mse')
+    model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate), loss='mse')
     return model
 
 # Inicialização da rede DQN
@@ -34,7 +34,11 @@ model = create_model()
 
 # Função para pré-processar a imagem de entrada
 def preprocess_state(state):
-    return np.mean(state, axis=2).reshape(1, 84, 84, 1)
+    state = state[0][35:195, :]  # Cortar a região de interesse da imagem
+    state = state[::2, :]  # Reduzir a resolução pela metade
+    state = np.mean(state, axis=2).astype(np.uint8)  # Converter para escala de cinza
+    state = state.reshape(1, 80, 80, 1)  # Redimensionar a imagem para (1, 80, 80, 1)
+    return state
 
 # Função para tomar uma ação com base na política epsilon-greedy
 def choose_action(state, epsilon):
@@ -51,7 +55,7 @@ for episode in range(500):
     while not done:
         env.render()
         action = choose_action(state, epsilon)
-        next_state, reward, done, _ = env.step(action)
+        next_state, reward, done, _ = env.step(action)[0], env.step(action)[1], env.step(action)[2], {}
         next_state = preprocess_state(next_state)
         total_reward += reward
 

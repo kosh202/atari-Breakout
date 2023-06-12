@@ -1,6 +1,7 @@
 import gym
 import numpy as np
 import time
+import pickle
 
 SEED = 42
 
@@ -41,3 +42,8 @@ for i in range(1000):
     observation = next_observation
 
 env.close()
+
+# Salvar a tabela Q em um arquivo
+filename = "q_table.pkl"
+with open(filename, "wb") as f:
+    pickle.dump(Q, f)
