@@ -34,3 +34,43 @@ while True:
     observation = next_observation
 
 env.close()
+
+# import gymnasium as gym
+# import numpy as np
+# import tensorflow as tf
+
+# # Carregar o modelo treinado
+# modelo_carregado = tf.keras.models.load_model("modelo_treinado.h5")
+
+# # Criação do ambiente
+# env = gym.make("ALE/Breakout-v5", render_mode="human")
+# observation, info = env.reset()
+
+# state_shape = (210, 160, 3)
+# num_actions = 4  # Exemplo: 4 ações possíveis no Breakout
+
+# total_rewards = 0
+# num_episodes = 10  # Número de episódios para jogar
+
+# # Loop de episódios
+# for episode in range(num_episodes):
+#     terminated = False
+#     total_reward = 0
+
+#     while not terminated:
+#         # Obter a ação com base no modelo carregado
+#         q_values = modelo_carregado.predict(np.expand_dims(observation, axis=0))
+#         action = np.argmax(q_values)
+
+#         observation, reward, terminated, _, _ = env.step(action)
+#         total_reward += reward
+
+#         env.render()  # Renderizar o ambiente para exibir o jogo
+
+#     print(f"Episode: {episode}, Total Reward: {total_reward}")
+#     total_rewards += total_reward
+
+# env.close()
+
+# average_reward = total_rewards / num_episodes
+# print("Average Reward:", average_reward)

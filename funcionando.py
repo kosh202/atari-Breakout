@@ -30,8 +30,8 @@ q_network = create_q_network(state_shape, num_actions)
 target_network = create_q_network(state_shape, num_actions)
 update_target_network(target_network, q_network)  # Inicialização da rede de destino com os pesos da rede principal
 
-optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)  # Otimizador para atualização dos pesos
-gamma = 0.99  # Fator de desconto
+optimizer = tf.keras.optimizers.Adam(learning_rate=0.0001)  # Otimizador para atualização dos pesos
+gamma = 0.8  # Fator de desconto
 
 update_frequency = 100  # Intervalo de atualização da rede de destino
 update_counter = 0
@@ -69,10 +69,12 @@ for episode in range(num_episodes):
 
     if terminated or truncated:
         print(f"Episode: {episode}, Loss: {loss}, Q-Values: {q_values}, Total Rewards: {total_rewards}")
-        total_rewards = 0
+        #total_rewards = 0
         observation, info = env.reset()
 
 env.close()
+
+q_network.save('modelo_treinado.h5')
 
 average_reward = total_rewards / num_episodes
 print("Average Reward:", average_reward)
