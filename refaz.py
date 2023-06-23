@@ -18,13 +18,14 @@ alpha = 0.1  # taxa de aprendizado
 gamma = 0.2  # fator de desconto
 epsilon = 0.8  # taxa de exploração (epsilon-greedy)
 total_rewards = 0
-num_episodes = 10000
+num_episodes = 150000
 epAtual = 0
 
 lastFailure = 0
 for i in range(num_episodes):
     # Escolha da ação com base na política epsilon-greedy
     epAtual = i
+    rewardEp=0
     if np.random.uniform(0, 1) < epsilon:
         action = np.random.randint(0, num_actions)
     else:
@@ -32,17 +33,18 @@ for i in range(num_episodes):
 
     # Executa a ação no ambiente
     next_observation, reward, terminated, truncated, info = env.step(action)
-    total_rewards += reward
+    total_rewards += reward+1
+    rewardEp += reward+1
 
 
     # Atualização da tabela Q
-    Q[observation, action] += alpha * ((reward-5) + gamma * np.max(Q[next_observation]) - Q[observation, action])
+    Q[observation, action] += alpha * ((reward+1) + gamma * np.max(Q[next_observation]) - Q[observation, action])
 
     # Verificação se o ambiente foi reiniciado
     if terminated or truncated:
         time.sleep(0.3)
         next_observation, info = env.reset()
-        print(f"Enviroment stopped after {i - lastFailure} steps\nNum ep: {epAtual}")
+        print(f"Enviroment stopped after {i - lastFailure} steps\nNum ep: {epAtual}\nReward ep:{rewardEp}")
         lastFailure = i
 
     observation = next_observation
